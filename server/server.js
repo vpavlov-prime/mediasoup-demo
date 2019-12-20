@@ -17,7 +17,7 @@ const protoo = require('protoo-server');
 const mediasoup = require('mediasoup');
 const express = require('express');
 const bodyParser = require('body-parser');
-const AwaitQueue = require('awaitqueue');
+const { AwaitQueue } = require('awaitqueue');
 const Logger = require('./lib/Logger');
 const Room = require('./lib/Room');
 const interactiveServer = require('./lib/interactiveServer');
@@ -76,7 +76,7 @@ async function run()
 	// Run a protoo WebSocketServer.
 	await runProtooWebSocketServer();
 
-	// Log rooms status every 30 seconds.
+	// Log rooms status every X seconds.
 	setInterval(() =>
 	{
 		for (const room of rooms.values())
@@ -114,6 +114,14 @@ async function runMediasoupWorkers()
 		});
 
 		mediasoupWorkers.push(worker);
+
+		// Log worker resource usage every X seconds.
+		setInterval(async () =>
+		{
+			const usage = await worker.getResourceUsage();
+
+			logger.info('mediasoup Worker resource usage [pid:%d]: %o', worker.pid, usage);
+		}, 120000);
 	}
 }
 
