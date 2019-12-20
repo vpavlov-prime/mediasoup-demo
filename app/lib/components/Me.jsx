@@ -32,12 +32,12 @@ class Me extends React.Component
 		} = this.props;
 
 		let micState;
-
+		
 		if (!me.canSendMic)
 			micState = 'unsupported';
 		else if (!audioProducer)
-			micState = 'unsupported';
-		else if (!audioProducer.paused)
+			micState = 'off';
+		else if (audioProducer)
 			micState = 'on';
 		else
 			micState = 'off';
@@ -86,8 +86,8 @@ class Me extends React.Component
 							onClick={() =>
 							{
 								micState === 'on'
-									? roomClient.muteMic()
-									: roomClient.unmuteMic();
+									? roomClient.disableMic()
+									: roomClient.enableMic();
 							}}
 						/>
 
